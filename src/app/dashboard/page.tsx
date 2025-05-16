@@ -17,7 +17,7 @@ const availableApps: AppInfo[] = [
     description: 'Ứng dụng chính của hệ thống VSS',
     longDescription: 'Ứng dụng chính của hệ thống VSS với đầy đủ các tính năng quản lý và vận hành.',
     url: process.env.NEXT_PUBLIC_VSSFE_URL || 'http://localhost:3000',
-    logoUrl: '/images/logos/vssfe-logo.svg',
+    logoUrl: '/images/vss.png',
     roles: ['default-roles-vss-dev'],
     category: 'Chính',
     isFeatured: true,
@@ -29,7 +29,7 @@ const availableApps: AppInfo[] = [
     description: 'Ứng dụng demo micro frontend',
     longDescription: 'Ứng dụng demo cho kiến trúc micro frontend với các tính năng mẫu.',
     url: process.env.NEXT_PUBLIC_MICRO_APP_DEMO_URL || 'http://localhost:3001',
-    logoUrl: '/images/logos/micro-app-logo.svg',
+    logoUrl: '/images/micro.png',
     roles: ['default-roles-vss-dev'],
     category: 'Demo',
     isNew: true,
@@ -41,7 +41,7 @@ const availableApps: AppInfo[] = [
     description: 'Quản lý giấy tờ có giá',
     longDescription: 'Hệ thống quản lý giấy tờ có giá với đầy đủ các tính năng theo dõi, quản lý và báo cáo.',
     url: process.env.NEXT_PUBLIC_GTCG_URL || 'http://localhost:3004',
-    logoUrl: '/images/logos/gtcg-logo.svg',
+    logoUrl: '/images/price.png',
     roles: ['default-roles-vss-dev'],
     category: 'Quản lý',
     backgroundColor: 'from-lime-100 to-moss-200', // Màu xanh lá nhạt
@@ -52,7 +52,7 @@ const availableApps: AppInfo[] = [
     description: 'Hệ thống ngân hàng giám sát',
     longDescription: 'Hệ thống ngân hàng giám sát với các tính năng giám sát, kiểm soát và báo cáo.',
     url: process.env.NEXT_PUBLIC_NHGS_URL || 'http://localhost:3005',
-    logoUrl: '/images/logos/nhgs-logo.svg',
+    logoUrl: '/images/bank.png',
     roles: ['default-roles-vss-dev'],
     category: 'Giám sát',
     backgroundColor: 'from-moss-100 to-lime-200', // Màu xanh rêu nhạt
@@ -100,16 +100,7 @@ export default function DashboardPage() {
       <Background />
       <Header />
 
-      <main className="container mx-auto px-4 pt-24 pb-24">
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl font-bold gradient-text mb-2">
-            Chào mừng đến với VSS Portal
-          </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Trung tâm quản lý và truy cập các ứng dụng trong hệ thống VSS
-          </p>
-        </div>
-
+      <main className="container mx-auto px-4 pt-36 pb-24">
         {/* All apps */}
         <section className="animate-slide-up" style={{ animationDelay: '300ms' }}>
           <h2 className="text-2xl font-bold mb-6 text-gray-800">Danh sách ứng dụng</h2>
