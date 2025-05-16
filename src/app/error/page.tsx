@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import Footer from '@/components/Footer';
 
 export default function ErrorPage() {
@@ -14,6 +15,16 @@ export default function ErrorPage() {
       <div className="flex-grow flex items-center justify-center bg-gradient-to-br from-primary-100 to-secondary-100">
         <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-xl animate-fade-in">
           <div className="text-center">
+            <div className="flex justify-center">
+              <div className="relative w-24 h-24">
+                <Image
+                  src="/images/logos/vss-logo.svg"
+                  alt="VSS Logo"
+                  fill
+                  className="object-contain opacity-50"
+                />
+              </div>
+            </div>
             <h2 className="mt-6 text-3xl font-extrabold text-red-600">
               Lỗi xác thực
             </h2>

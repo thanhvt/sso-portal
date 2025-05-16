@@ -12,6 +12,10 @@ export default function Background() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Đảm bảo canvas và ctx không null trong phạm vi của các hàm
+    const safeCanvas = canvas;
+    const safeCtx = ctx;
+
     // Set canvas dimensions
     const setCanvasDimensions = () => {
       canvas.width = window.innerWidth;
@@ -31,21 +35,21 @@ export default function Background() {
       color: string;
 
       constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
+        this.x = Math.random() * safeCanvas.width;
+        this.y = Math.random() * safeCanvas.height;
         this.size = Math.random() * 3 + 1;
         this.speedX = Math.random() * 0.5 - 0.25;
         this.speedY = Math.random() * 0.5 - 0.25;
-        // Màu xanh lá và xanh rêu
+        // Màu xanh lá và xanh rêu với độ đậm cao hơn
         const colors = [
           // Xanh lá
-          `rgba(34, 197, 94, ${Math.random() * 0.3 + 0.1})`,
-          `rgba(16, 185, 129, ${Math.random() * 0.3 + 0.1})`,
-          `rgba(101, 163, 13, ${Math.random() * 0.3 + 0.1})`,
+          `rgba(34, 197, 94, ${Math.random() * 0.3 + 0.3})`, // Tăng độ đậm
+          `rgba(16, 185, 129, ${Math.random() * 0.3 + 0.3})`,
+          `rgba(101, 163, 13, ${Math.random() * 0.3 + 0.3})`,
           // Xanh rêu
-          `rgba(107, 122, 77, ${Math.random() * 0.3 + 0.1})`,
-          `rgba(86, 98, 62, ${Math.random() * 0.3 + 0.1})`,
-          `rgba(77, 124, 15, ${Math.random() * 0.3 + 0.1})`,
+          `rgba(107, 122, 77, ${Math.random() * 0.3 + 0.3})`,
+          `rgba(86, 98, 62, ${Math.random() * 0.3 + 0.3})`,
+          `rgba(77, 124, 15, ${Math.random() * 0.3 + 0.3})`,
         ];
         this.color = colors[Math.floor(Math.random() * colors.length)];
       }
@@ -54,23 +58,23 @@ export default function Background() {
         this.x += this.speedX;
         this.y += this.speedY;
 
-        if (this.x > canvas.width) this.x = 0;
-        else if (this.x < 0) this.x = canvas.width;
-        if (this.y > canvas.height) this.y = 0;
-        else if (this.y < 0) this.y = canvas.height;
+        if (this.x > safeCanvas.width) this.x = 0;
+        else if (this.x < 0) this.x = safeCanvas.width;
+        if (this.y > safeCanvas.height) this.y = 0;
+        else if (this.y < 0) this.y = safeCanvas.height;
       }
 
       draw() {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
+        safeCtx.fillStyle = this.color;
+        safeCtx.beginPath();
+        safeCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        safeCtx.fill();
       }
     }
 
     // Create particles
     const particlesArray: Particle[] = [];
-    const numberOfParticles = Math.min(100, Math.floor((canvas.width * canvas.height) / 10000));
+    const numberOfParticles = Math.min(100, Math.floor((safeCanvas.width * safeCanvas.height) / 10000));
 
     for (let i = 0; i < numberOfParticles; i++) {
       particlesArray.push(new Particle());
@@ -87,12 +91,12 @@ export default function Background() {
 
           if (distance < maxDistance) {
             const opacity = 1 - distance / maxDistance;
-            ctx.strokeStyle = `rgba(34, 197, 94, ${opacity * 0.15})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-            ctx.stroke();
+            safeCtx.strokeStyle = `rgba(34, 197, 94, ${opacity * 0.4})`; // Tăng độ đậm của đường kẻ
+            safeCtx.lineWidth = 1.05; // Tăng độ dày của đường kẻ một chút
+            safeCtx.beginPath();
+            safeCtx.moveTo(particlesArray[a].x, particlesArray[a].y);
+            safeCtx.lineTo(particlesArray[b].x, particlesArray[b].y);
+            safeCtx.stroke();
           }
         }
       }
@@ -100,7 +104,9 @@ export default function Background() {
 
     // Animation loop
     function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Xóa canvas với độ trong suốt nhẹ để tạo hiệu ứng vệt mờ
+      safeCtx.fillStyle = 'rgba(255, 255, 255, 0.9)'; // Gần như xóa hoàn toàn, chỉ để lại vệt mờ nhẹ
+      safeCtx.fillRect(0, 0, safeCanvas.width, safeCanvas.height);
 
       // Update and draw particles
       for (let i = 0; i < particlesArray.length; i++) {

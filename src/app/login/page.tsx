@@ -84,9 +84,9 @@ export default function LoginPage() {
         <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-xl animate-fade-in">
           <div className="text-center">
             <div className="flex justify-center">
-              <div className="relative w-24 h-24 animate-pulse-slow">
+              <div className="relative w-32 h-32 animate-pulse-slow">
                 <Image
-                  src="/images/logo.png"
+                  src="/images/logos/vss-logo.svg"
                   alt="VSS Logo"
                   fill
                   className="object-contain"

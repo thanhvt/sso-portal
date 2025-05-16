@@ -43,7 +43,7 @@ export default function AppCard({ app, onSelect, delay }: AppCardProps) {
 
       <div className="p-6 relative z-10">
         <div className="flex items-center mb-4">
-          <div className="relative w-16 h-16 mr-4 rounded-lg overflow-hidden bg-white/80 flex items-center justify-center shadow-md transform transition-transform duration-300 hover:scale-105">
+          <div className="relative w-24 h-24 mr-4 rounded-lg overflow-hidden bg-white/80 flex items-center justify-center shadow-md transform transition-transform duration-300 hover:scale-105">
             {app.logoUrl ? (
               <Image
                 src={app.logoUrl}

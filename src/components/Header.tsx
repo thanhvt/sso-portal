@@ -79,7 +79,7 @@ export default function Header() {
           <h1 className={`font-bold transition-all duration-300 ${
             isScrolled ? 'text-xl text-gray-800' : 'text-2xl gradient-text'
           }`}>
-            VSS Portal
+            Vietcombank
           </h1>
         </div>
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#15803d;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="10" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+    <clipPath id="circleClip">
+      <circle cx="256" cy="256" r="200" />
+    </clipPath>
+  </defs>
+  
+  <!-- Background -->
+  <circle cx="256" cy="256" r="256" fill="url(#grad1)" />
+  
+  <!-- VSS Logo Design -->
+  <g filter="url(#shadow)" clip-path="url(#circleClip)">
+    <!-- Shield Shape -->
+    <path d="M256,100 L130,150 L130,250 C130,330 180,380 256,420 C332,380 382,330 382,250 L382,150 Z" fill="white" />
+    
+    <!-- Shield Inner Design -->
+    <path d="M256,140 L170,175 L170,250 C170,310 205,345 256,375 C307,345 342,310 342,250 L342,175 Z" fill="#dcfce7" />
+    
+    <!-- VSS Text -->
+    <text x="256" y="280" font-family="Arial, sans-serif" font-size="100" font-weight="bold" text-anchor="middle" fill="#16a34a">VSS</text>
+  </g>
+  
+  <!-- Decorative Circles -->
+  <circle cx="120" cy="120" r="20" fill="white" opacity="0.3" />
+  <circle cx="400" cy="400" r="30" fill="white" opacity="0.3" />
+  <circle cx="400" cy="120" r="15" fill="white" opacity="0.3" />
+  <circle cx="120" cy="400" r="25" fill="white" opacity="0.3" />
+</svg>

@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import Image from 'next/image';
 import Footer from '@/components/Footer';
 
 export default function Home() {
@@ -38,6 +39,16 @@ export default function Home() {
       <div className="flex-grow flex items-center justify-center bg-gradient-to-br from-primary-100 to-secondary-100">
         <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-xl animate-fade-in">
           <div className="text-center">
+            <div className="flex justify-center">
+              <div className="relative w-32 h-32 animate-pulse-slow">
+                <Image
+                  src="/images/logos/vss-logo.svg"
+                  alt="VSS Logo"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </div>
             <h2 className="mt-6 text-3xl font-extrabold text-gray-900 gradient-text">
               VSS Portal
             </h2>
