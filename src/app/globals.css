@@ -140,6 +140,8 @@ body {
   @apply from-moss-600 via-moss-700 to-moss-800 shadow-button-hover transform -translate-y-0.5;
 }
 
+
+
 /* Background patterns */
 .bg-dots {
   background-image: radial-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px);

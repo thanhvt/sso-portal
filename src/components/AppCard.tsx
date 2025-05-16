@@ -73,8 +73,16 @@ export default function AppCard({ app, onSelect, delay }: AppCardProps) {
           <button
             onClick={() => onSelect(app)}
             className="btn-primary w-full relative overflow-hidden group"
+            style={{ height: '40px' }}
           >
-            <span className="relative z-10">Truy cập</span>
+            <span className="relative z-10 flex items-center justify-center">
+              <span className="group-hover:-translate-y-10 transition-transform duration-300 inline-block">Truy cập</span>
+              <span className="absolute translate-y-10 group-hover:translate-y-0 transition-transform duration-300 inline-block">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </span>
+            </span>
             <span className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
           </button>
         </div>
