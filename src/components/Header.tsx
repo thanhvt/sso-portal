@@ -72,7 +72,7 @@ export default function Header() {
           <div className="flex items-center">
             <div className="relative h-10 w-10 mr-3">
               <Image
-                src="/images/logo.png"
+                src="/images/logos/vss-logo.svg"
                 alt="VSS Logo"
                 fill
                 className="object-contain"
