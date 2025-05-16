@@ -11,10 +11,31 @@ export async function getAccessToken() {
 }
 
 export async function getIdToken() {
-  const session = await getServerSession(authOptions);
-  if (session) {
-    const idTokenDecrypted = session.id_token || '';
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      console.warn('No session found when trying to get id_token');
+      return null;
+    }
+
+    // Kiểm tra xem session có chứa id_token không
+    if (!session.id_token) {
+      console.warn('Session does not contain id_token', {
+        sessionKeys: Object.keys(session),
+        sessionHasUser: !!session.user
+      });
+
+      // Nếu không có id_token trong session, trả về null
+      return null;
+    }
+
+    const idTokenDecrypted = session.id_token;
+    console.log('Successfully retrieved id_token');
+
     return idTokenDecrypted;
+  } catch (error) {
+    console.error('Error getting id_token:', error);
+    return null;
   }
-  return null;
 }

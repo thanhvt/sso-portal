@@ -9,7 +9,23 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === 'authenticated') {
+    // Kiểm tra xem có đang đăng xuất không
+    const url = new URL(window.location.href);
+    const isLogout = url.searchParams.get('logout') === 'true';
+
+    if (isLogout) {
+      // Nếu đang đăng xuất, xóa cookie và localStorage
+      document.cookie.split(';').forEach(cookie => {
+        const [name] = cookie.trim().split('=');
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      });
+
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Chuyển hướng đến trang login với tham số logout=true
+      router.push('/login?logout=true');
+    } else if (status === 'authenticated') {
       router.push('/dashboard');
     } else if (status === 'unauthenticated') {
       router.push('/login');

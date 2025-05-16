@@ -4,13 +4,7 @@ import { useState, useEffect } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 
-async function keycloakSessionLogout() {
-  try {
-    await fetch(`/api/logout`, { method: 'GET' });
-  } catch (error) {
-    console.log(error);
-  }
-}
+// Không cần hàm keycloakSessionLogout nữa vì chúng ta sẽ chuyển hướng trực tiếp đến URL đăng xuất của Keycloak
 
 export default function Header() {
   const { data: session } = useSession();
@@ -31,24 +25,53 @@ export default function Header() {
   }, []);
 
   const handleLogout = async () => {
-    await keycloakSessionLogout();
-    signOut({ callbackUrl: '/' });
+    try {
+      console.log('Starting logout process...');
+
+      // Gọi API logout để lấy id_token_hint và thực hiện đăng xuất từ Keycloak
+      const logoutResponse = await fetch('/api/logout', { method: 'GET' });
+      const logoutData = await logoutResponse.json();
+
+      console.log('Logout API response:', logoutData);
+
+      // Đăng xuất khỏi NextAuth
+      await signOut({
+        redirect: false
+      });
+
+      // Xóa cookie và localStorage
+      document.cookie.split(';').forEach(cookie => {
+        const [name] = cookie.trim().split('=');
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      });
+
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Chuyển hướng về trang login với tham số logout=true
+      console.log('Redirecting to login page with logout=true');
+      window.location.href = '/login?logout=true';
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Nếu có lỗi, vẫn cố gắng chuyển hướng về trang login với tham số logout=true
+      window.location.href = '/login?logout=true';
+    }
   };
 
   return (
-    <header 
+    <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white/80 backdrop-blur-md shadow-md py-2' 
+        isScrolled
+          ? 'bg-white/80 backdrop-blur-md shadow-md py-2'
           : 'bg-transparent py-4'
       }`}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
         <div className="flex items-center">
           <div className="relative h-10 w-10 mr-3">
-            <Image 
-              src="/images/logo.png" 
-              alt="VSS Logo" 
+            <Image
+              src="/images/logo.png"
+              alt="VSS Logo"
               fill
               className="object-contain"
             />
@@ -62,7 +85,7 @@ export default function Header() {
 
         {session?.user && (
           <div className="relative">
-            <button 
+            <button
               className="flex items-center space-x-2 focus:outline-none"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >

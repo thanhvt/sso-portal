@@ -76,6 +76,13 @@ const authOptions: NextAuthOptions = {
       clientId: process.env.FRONTEND_CLIENT_ID || '',
       clientSecret: process.env.FRONTEND_CLIENT_SECRET || '',
       issuer: process.env.AUTH_ISSUER || '',
+      // Thêm các tùy chọn để debug
+      authorization: {
+        params: {
+          scope: 'openid email profile',
+          redirect_uri: process.env.NEXTAUTH_CALLBACK_URL || `${process.env.NEXTAUTH_URL}/api/auth/callback/keycloak`,
+        },
+      },
     }),
   ],
   callbacks: {
