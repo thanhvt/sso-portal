@@ -36,7 +36,18 @@ export default function Background() {
         this.size = Math.random() * 3 + 1;
         this.speedX = Math.random() * 0.5 - 0.25;
         this.speedY = Math.random() * 0.5 - 0.25;
-        this.color = `rgba(${Math.floor(Math.random() * 100 + 155)}, ${Math.floor(Math.random() * 100 + 155)}, ${Math.floor(Math.random() * 100 + 155)}, ${Math.random() * 0.3 + 0.1})`;
+        // Màu xanh lá và xanh rêu
+        const colors = [
+          // Xanh lá
+          `rgba(34, 197, 94, ${Math.random() * 0.3 + 0.1})`,
+          `rgba(16, 185, 129, ${Math.random() * 0.3 + 0.1})`,
+          `rgba(101, 163, 13, ${Math.random() * 0.3 + 0.1})`,
+          // Xanh rêu
+          `rgba(107, 122, 77, ${Math.random() * 0.3 + 0.1})`,
+          `rgba(86, 98, 62, ${Math.random() * 0.3 + 0.1})`,
+          `rgba(77, 124, 15, ${Math.random() * 0.3 + 0.1})`,
+        ];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
       }
 
       update() {
@@ -76,7 +87,7 @@ export default function Background() {
 
           if (distance < maxDistance) {
             const opacity = 1 - distance / maxDistance;
-            ctx.strokeStyle = `rgba(150, 150, 255, ${opacity * 0.2})`;
+            ctx.strokeStyle = `rgba(34, 197, 94, ${opacity * 0.15})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
@@ -90,13 +101,13 @@ export default function Background() {
     // Animation loop
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       // Update and draw particles
       for (let i = 0; i < particlesArray.length; i++) {
         particlesArray[i].update();
         particlesArray[i].draw();
       }
-      
+
       connect();
       requestAnimationFrame(animate);
     }
@@ -109,9 +120,9 @@ export default function Background() {
   }, []);
 
   return (
-    <canvas 
-      ref={canvasRef} 
-      className="fixed top-0 left-0 w-full h-full -z-10 bg-gradient-to-br from-primary-50 to-secondary-50"
+    <canvas
+      ref={canvasRef}
+      className="fixed top-0 left-0 w-full h-full -z-10 bg-gradient-to-br from-primary-50 via-lime-50 to-secondary-50"
     />
   );
 }

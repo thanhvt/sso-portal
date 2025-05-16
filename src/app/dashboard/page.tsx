@@ -21,7 +21,7 @@ const availableApps: AppInfo[] = [
     roles: ['default-roles-vss-dev'],
     category: 'Chính',
     isFeatured: true,
-    backgroundColor: '#e0f2fe',
+    backgroundColor: 'from-primary-100 to-lime-200',
   },
   {
     id: 'micro-app-demo',
@@ -33,7 +33,7 @@ const availableApps: AppInfo[] = [
     roles: ['default-roles-vss-dev'],
     category: 'Demo',
     isNew: true,
-    backgroundColor: '#ede9fe',
+    backgroundColor: 'from-secondary-100 to-primary-200',
   },
   {
     id: 'giay-to-co-gia',
@@ -44,7 +44,7 @@ const availableApps: AppInfo[] = [
     logoUrl: '/images/gtcg-logo.svg',
     roles: ['default-roles-vss-dev'],
     category: 'Quản lý',
-    backgroundColor: '#f0fdf4', // Màu xanh lá nhạt
+    backgroundColor: 'from-lime-100 to-moss-200', // Màu xanh lá nhạt
   },
   {
     id: 'ngan-hang-giam-sat',
@@ -55,7 +55,7 @@ const availableApps: AppInfo[] = [
     logoUrl: '/images/nhgs-logo.svg',
     roles: ['default-roles-vss-dev'],
     category: 'Giám sát',
-    backgroundColor: '#fff7ed', // Màu cam nhạt
+    backgroundColor: 'from-moss-100 to-lime-200', // Màu xanh rêu nhạt
   },
 ];
 
