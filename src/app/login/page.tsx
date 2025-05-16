@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Footer from '@/components/Footer';
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
@@ -78,70 +79,74 @@ export default function LoginPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-100 to-secondary-100">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-xl animate-fade-in">
-        <div className="text-center">
-          <div className="flex justify-center">
-            <div className="relative w-24 h-24 animate-pulse-slow">
-              <Image
-                src="/images/logo.png"
-                alt="VSS Logo"
-                fill
-                className="object-contain"
-              />
+    <div className="min-h-screen flex flex-col">
+      <div className="flex-grow flex items-center justify-center bg-gradient-to-br from-primary-100 to-secondary-100">
+        <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-xl animate-fade-in">
+          <div className="text-center">
+            <div className="flex justify-center">
+              <div className="relative w-24 h-24 animate-pulse-slow">
+                <Image
+                  src="/images/logo.png"
+                  alt="VSS Logo"
+                  fill
+                  className="object-contain"
+                />
+              </div>
             </div>
-          </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900 gradient-text">
-            VSS Portal
-          </h2>
+            <h2 className="mt-6 text-3xl font-extrabold text-gray-900 gradient-text">
+              VSS Portal
+            </h2>
 
-          {error ? (
-            <>
-              <div className="mt-4 p-4 bg-red-50 rounded-md">
-                <p className="text-red-600 font-medium">Lỗi xác thực</p>
-                <p className="text-sm text-red-500">{error}</p>
+            {error ? (
+              <>
+                <div className="mt-4 p-4 bg-red-50 rounded-md">
+                  <p className="text-red-600 font-medium">Lỗi xác thực</p>
+                  <p className="text-sm text-red-500">{error}</p>
+                </div>
+                <div className="mt-4">
+                  <button
+                    onClick={() => signIn('keycloak', { callbackUrl: '/dashboard' })}
+                    className="btn-primary"
+                  >
+                    Thử lại
+                  </button>
+                </div>
+              </>
+            ) : isLoggedOut ? (
+              <>
+                <div className="mt-4 p-4 bg-green-50 rounded-md">
+                  <p className="text-green-600 font-medium">Đăng xuất thành công</p>
+                  <p className="text-sm text-green-500">Bạn sẽ được chuyển hướng đến trang đăng nhập...</p>
+                </div>
+              </>
+            ) : (
+              <p className="mt-2 text-sm text-gray-600">
+                {isLoading ? 'Đang chuyển hướng đến trang đăng nhập...' : 'Đang xử lý đăng nhập...'}
+              </p>
+            )}
+          </div>
+
+          {isLoading && !error && (
+            <div className="mt-8 space-y-6">
+              <div className="flex items-center justify-center">
+                <div className="w-8 h-8 border-t-2 border-b-2 border-primary-500 rounded-full animate-spin"></div>
               </div>
-              <div className="mt-4">
-                <button
-                  onClick={() => signIn('keycloak', { callbackUrl: '/dashboard' })}
-                  className="btn-primary"
-                >
-                  Thử lại
-                </button>
+            </div>
+          )}
+
+          {!isLoading && !error && (
+            <div className="mt-8 space-y-6">
+              <div className="flex items-center justify-center">
+                <Link href="/dashboard" className="btn-primary">
+                  Đi đến Dashboard
+                </Link>
               </div>
-            </>
-          ) : isLoggedOut ? (
-            <>
-              <div className="mt-4 p-4 bg-green-50 rounded-md">
-                <p className="text-green-600 font-medium">Đăng xuất thành công</p>
-                <p className="text-sm text-green-500">Bạn sẽ được chuyển hướng đến trang đăng nhập...</p>
-              </div>
-            </>
-          ) : (
-            <p className="mt-2 text-sm text-gray-600">
-              {isLoading ? 'Đang chuyển hướng đến trang đăng nhập...' : 'Đang xử lý đăng nhập...'}
-            </p>
+            </div>
           )}
         </div>
-
-        {isLoading && !error && (
-          <div className="mt-8 space-y-6">
-            <div className="flex items-center justify-center">
-              <div className="w-8 h-8 border-t-2 border-b-2 border-primary-500 rounded-full animate-spin"></div>
-            </div>
-          </div>
-        )}
-
-        {!isLoading && !error && (
-          <div className="mt-8 space-y-6">
-            <div className="flex items-center justify-center">
-              <Link href="/dashboard" className="btn-primary">
-                Đi đến Dashboard
-              </Link>
-            </div>
-          </div>
-        )}
       </div>
+
+      <Footer />
     </div>
   );
 }

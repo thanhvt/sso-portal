@@ -7,7 +7,7 @@ VSS Portal là một ứng dụng Single Sign-On (SSO) làm điểm truy cập c
 - **Xác thực tập trung**: Sử dụng Keycloak làm hệ thống xác thực
 - **Dashboard hiện đại**: Giao diện người dùng đẹp mắt với nhiều hiệu ứng
 - **Quản lý ứng dụng**: Hiển thị danh sách các ứng dụng mà người dùng có quyền truy cập
-- **Tìm kiếm và lọc**: Tìm kiếm và lọc ứng dụng theo danh mục
+- **Giao diện đơn giản**: Hiển thị tất cả ứng dụng trong một danh sách duy nhất
 - **Responsive**: Hoạt động tốt trên mọi thiết bị
 
 ## Cài đặt
@@ -86,8 +86,7 @@ const availableApps: AppInfo[] = [
     logoUrl: '/images/your-app-logo.png',
     roles: ['required-role-to-access'],
     category: 'Your Category',
-    isNew: true, // Tùy chọn
-    isFeatured: false, // Tùy chọn
+    // Các thuộc tính isNew và isFeatured không còn cần thiết vì tất cả ứng dụng được hiển thị trong một danh sách
   },
 ];
 ```

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import AppCard from '@/components/AppCard';
 import Background from '@/components/Background';
+import Footer from '@/components/Footer';
 import { AppInfo } from '@/types/app';
 
 // Danh sách các ứng dụng
@@ -34,15 +35,34 @@ const availableApps: AppInfo[] = [
     isNew: true,
     backgroundColor: '#ede9fe',
   },
+  {
+    id: 'giay-to-co-gia',
+    name: 'Giấy tờ có giá',
+    description: 'Quản lý giấy tờ có giá',
+    longDescription: 'Hệ thống quản lý giấy tờ có giá với đầy đủ các tính năng theo dõi, quản lý và báo cáo.',
+    url: process.env.NEXT_PUBLIC_GTCG_URL || 'http://localhost:3004',
+    logoUrl: '/images/gtcg-logo.svg',
+    roles: ['default-roles-vss-dev'],
+    category: 'Quản lý',
+    backgroundColor: '#f0fdf4', // Màu xanh lá nhạt
+  },
+  {
+    id: 'ngan-hang-giam-sat',
+    name: 'Ngân hàng giám sát',
+    description: 'Hệ thống ngân hàng giám sát',
+    longDescription: 'Hệ thống ngân hàng giám sát với các tính năng giám sát, kiểm soát và báo cáo.',
+    url: process.env.NEXT_PUBLIC_NHGS_URL || 'http://localhost:3005',
+    logoUrl: '/images/nhgs-logo.svg',
+    roles: ['default-roles-vss-dev'],
+    category: 'Giám sát',
+    backgroundColor: '#fff7ed', // Màu cam nhạt
+  },
 ];
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [userApps, setUserApps] = useState<AppInfo[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -51,17 +71,11 @@ export default function DashboardPage() {
       // Lọc các ứng dụng mà người dùng có quyền truy cập
       const userRoles = session.roles || [];
       console.log('User roles:', userRoles);
-      
-      const filteredApps = availableApps.filter(app => 
+
+      const filteredApps = availableApps.filter(app =>
         app.roles.some(role => userRoles.includes(role))
       );
       setUserApps(filteredApps);
-      
-      // Lấy danh sách các danh mục
-      const uniqueCategories = Array.from(
-        new Set(filteredApps.map(app => app.category).filter(Boolean))
-      ) as string[];
-      setCategories(uniqueCategories);
     }
   }, [session, status, router]);
 
@@ -72,21 +86,6 @@ export default function DashboardPage() {
     const url = `${app.url}?token=${token}`;
     window.open(url, '_blank');
   };
-
-  // Lọc ứng dụng theo tìm kiếm và danh mục
-  const filteredApps = userApps.filter(app => {
-    const matchesSearch = app.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         app.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory ? app.category === selectedCategory : true;
-    return matchesSearch && matchesCategory;
-  });
-
-  // Ứng dụng nổi bật
-  const featuredApps = filteredApps.filter(app => app.isFeatured);
-  // Ứng dụng mới
-  const newApps = filteredApps.filter(app => app.isNew && !app.isFeatured);
-  // Các ứng dụng khác
-  const otherApps = filteredApps.filter(app => !app.isFeatured && !app.isNew);
 
   if (status === 'loading') {
     return (
@@ -100,8 +99,8 @@ export default function DashboardPage() {
     <div className="min-h-screen">
       <Background />
       <Header />
-      
-      <main className="container mx-auto px-4 pt-24 pb-16">
+
+      <main className="container mx-auto px-4 pt-24 pb-24">
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-4xl font-bold gradient-text mb-2">
             Chào mừng đến với VSS Portal
@@ -110,101 +109,31 @@ export default function DashboardPage() {
             Trung tâm quản lý và truy cập các ứng dụng trong hệ thống VSS
           </p>
         </div>
-        
-        {/* Search and filter */}
-        <div className="mb-8 max-w-2xl mx-auto animate-slide-down" style={{ animationDelay: '200ms' }}>
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
-              <input
-                type="text"
-                placeholder="Tìm kiếm ứng dụng..."
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+
+        {/* All apps */}
+        <section className="animate-slide-up" style={{ animationDelay: '300ms' }}>
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">Danh sách ứng dụng</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {userApps.map((app, index) => (
+              <AppCard
+                key={app.id}
+                app={app}
+                onSelect={navigateToApp}
+                delay={index * 100}
               />
-            </div>
-            
-            {categories.length > 0 && (
-              <div>
-                <select
-                  className="w-full md:w-auto px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  value={selectedCategory || ''}
-                  onChange={(e) => setSelectedCategory(e.target.value || null)}
-                >
-                  <option value="">Tất cả danh mục</option>
-                  {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-              </div>
-            )}
+            ))}
           </div>
-        </div>
-        
-        {/* Featured apps */}
-        {featuredApps.length > 0 && (
-          <section className="mb-12 animate-slide-up" style={{ animationDelay: '300ms' }}>
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">Ứng dụng nổi bật</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredApps.map((app, index) => (
-                <AppCard 
-                  key={app.id} 
-                  app={app} 
-                  onSelect={navigateToApp} 
-                  delay={index * 100}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-        
-        {/* New apps */}
-        {newApps.length > 0 && (
-          <section className="mb-12 animate-slide-up" style={{ animationDelay: '400ms' }}>
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">Ứng dụng mới</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {newApps.map((app, index) => (
-                <AppCard 
-                  key={app.id} 
-                  app={app} 
-                  onSelect={navigateToApp} 
-                  delay={index * 100}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-        
-        {/* Other apps */}
-        {otherApps.length > 0 && (
-          <section className="animate-slide-up" style={{ animationDelay: '500ms' }}>
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">Tất cả ứng dụng</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {otherApps.map((app, index) => (
-                <AppCard 
-                  key={app.id} 
-                  app={app} 
-                  onSelect={navigateToApp} 
-                  delay={index * 100}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-        
+        </section>
+
         {/* No apps found */}
-        {filteredApps.length === 0 && (
+        {userApps.length === 0 && (
           <div className="text-center py-12 animate-fade-in">
             <p className="text-gray-500 text-lg">Không tìm thấy ứng dụng phù hợp</p>
           </div>
         )}
       </main>
-      
-      <footer className="bg-white/80 backdrop-blur-md py-6 border-t border-gray-200">
-        <div className="container mx-auto px-4 text-center text-gray-600 text-sm">
-          <p>&copy; {new Date().getFullYear()} VSS Portal. All rights reserved.</p>
-        </div>
-      </footer>
+
+      <Footer />
     </div>
   );
 }
