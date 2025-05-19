@@ -57,6 +57,46 @@ const availableApps: AppInfo[] = [
     category: 'Giám sát',
     backgroundColor: 'from-moss-100 to-lime-200', // Màu xanh rêu nhạt
   },
+  // Các ứng dụng Coming Soon
+  {
+    id: 'bao-cao-thong-ke',
+    name: 'Báo cáo thống kê',
+    description: 'Hệ thống báo cáo và thống kê tổng hợp',
+    longDescription: 'Hệ thống báo cáo và thống kê tổng hợp với các biểu đồ trực quan, số liệu chi tiết và khả năng xuất báo cáo đa dạng.',
+    url: '#',
+    logoUrl: '/images/vss.png',
+    roles: ['default-roles-vss-dev'],
+    category: 'Báo cáo',
+    isComingSoon: true,
+    releaseDate: 'Quý 3/2025',
+    backgroundColor: 'from-gray-100 to-gray-200',
+  },
+  {
+    id: 'quan-ly-tai-san',
+    name: 'Quản lý tài sản',
+    description: 'Hệ thống quản lý tài sản đầu tư',
+    longDescription: 'Hệ thống quản lý tài sản đầu tư với các tính năng theo dõi hiệu suất, phân tích rủi ro và báo cáo chi tiết.',
+    url: '#',
+    logoUrl: '/images/price.png',
+    roles: ['default-roles-vss-dev'],
+    category: 'Quản lý',
+    isComingSoon: true,
+    releaseDate: 'Quý 4/2025',
+    backgroundColor: 'from-slate-100 to-slate-200',
+  },
+  {
+    id: 'phan-tich-du-lieu',
+    name: 'Phân tích dữ liệu',
+    description: 'Công cụ phân tích dữ liệu nâng cao',
+    longDescription: 'Công cụ phân tích dữ liệu nâng cao với các mô hình dự báo, phân tích xu hướng và trực quan hóa dữ liệu.',
+    url: '#',
+    logoUrl: '/images/micro.png',
+    roles: ['default-roles-vss-dev'],
+    category: 'Phân tích',
+    isComingSoon: true,
+    releaseDate: 'Quý 1/2026',
+    backgroundColor: 'from-zinc-100 to-zinc-200',
+  },
 ];
 
 export default function DashboardPage() {
