@@ -40,7 +40,7 @@ const availableApps: AppInfo[] = [
     name: 'Giấy tờ có giá',
     description: 'Quản lý giấy tờ có giá',
     longDescription: 'Hệ thống quản lý giấy tờ có giá với đầy đủ các tính năng theo dõi, quản lý và báo cáo.',
-    url: process.env.NEXT_PUBLIC_GTCG_URL || 'http://localhost:3004',
+    url: process.env.NEXT_PUBLIC_GTCG_URL || 'http://localhost:3008',
     logoUrl: '/images/price.png',
     roles: ['default-roles-vss-dev'],
     category: 'Quản lý',
