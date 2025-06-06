@@ -28,7 +28,7 @@ const availableApps: AppInfo[] = [
     name: 'Micro App Demo',
     description: 'Ứng dụng demo micro frontend',
     longDescription: 'Ứng dụng demo cho kiến trúc micro frontend với các tính năng mẫu.',
-    url: process.env.NEXT_PUBLIC_MICRO_APP_DEMO_URL || 'http://localhost:3001',
+    url: process.env.NEXT_PUBLIC_MAD_URL || 'http://localhost:3001',
     logoUrl: '/images/micro.png',
     roles: ['default-roles-vss-dev'],
     category: 'Demo',
@@ -120,11 +120,41 @@ export default function DashboardPage() {
   }, [session, status, router]);
 
   // Xử lý chuyển hướng đến ứng dụng con
-  const navigateToApp = (app: AppInfo) => {
+  const navigateToApp = async (app: AppInfo) => {
     // Thêm token vào URL hoặc lưu vào cookie
-    const token = session?.access_token;
-    const url = `${app.url}?token=${token}`;
-    window.open(url, '_blank');
+    // const token = session?.access_token;
+    // const url = `${app.url}?token=${token}`;
+    // window.open(url, '_blank');
+
+    // // Môi trường PROD
+    // document.cookie = `auth_token=${session?.access_token}; path=/; domain=.yourdomain.com; secure; httponly; samesite=strict`;
+    // // Môi trường DEV
+    // sessionStorage.setItem('auth_token', session?.access_token || '');
+
+    try {
+      // Gọi API để thiết lập cookie
+      const response = await fetch('/api/auth/set-cookie', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: session?.access_token }),
+        credentials: 'include' // Quan trọng để cookie được lưu
+      }); 
+
+      if (!response.ok) {
+        throw new Error('Failed to set authentication cookie');
+      }
+
+      window.open(app.url, '_blank'); 
+    } catch (error) {
+      console.error('Error navigating to app:', error);
+    
+      if (process.env.NODE_ENV !== 'production') {
+        sessionStorage.setItem('auth_token', session?.access_token || '');
+        window.open(app.url, '_blank');
+        return;
+      }
+      alert('Không thể chuyển hướng đến ứng dụng. Vui lòng thử lại sau.');
+    }
   };
 
   if (status === 'loading') {
