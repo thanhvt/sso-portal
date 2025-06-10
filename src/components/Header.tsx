@@ -28,27 +28,37 @@ export default function Header() {
     try {
       console.log('Starting logout process...');
 
-      // Gọi API logout để lấy id_token_hint và thực hiện đăng xuất từ Keycloak
+      // 1. Gọi API clear-cookie để xóa cookie auth_token
+      try {
+        const clearCookieResponse = await fetch('/api/auth/clear-cookie', {
+          method: 'POST',
+          credentials: 'include', // Quan trọng để đảm bảo cookie được gửi và xóa
+        });
+        
+        if (clearCookieResponse.ok) {
+          console.log('Auth cookie cleared successfully');
+        }
+      } catch (cookieError) {
+        console.warn('Error clearing auth cookie:', cookieError);
+        // Tiếp tục quá trình đăng xuất ngay cả khi xóa cookie thất bại
+      }
+
+      // 2. Gọi API logout để lấy id_token_hint và thực hiện đăng xuất từ Keycloak
       const logoutResponse = await fetch('/api/logout', { method: 'GET' });
       const logoutData = await logoutResponse.json();
 
       console.log('Logout API response:', logoutData);
 
-      // Đăng xuất khỏi NextAuth
+      // 3. Đăng xuất khỏi NextAuth
       await signOut({
         redirect: false
       });
 
-      // Xóa cookie và localStorage
-      document.cookie.split(';').forEach(cookie => {
-        const [name] = cookie.trim().split('=');
-        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-      });
-
+      // 4. Xóa dữ liệu phiên khác (belt and suspenders)
       localStorage.clear();
       sessionStorage.clear();
-
-      // Chuyển hướng về trang login với tham số logout=true
+      
+      // 5. Chuyển hướng về trang login với tham số logout=true
       console.log('Redirecting to login page with logout=true');
       window.location.href = '/login?logout=true';
     } catch (error) {

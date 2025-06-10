@@ -111,3 +111,9 @@ NEXT_PUBLIC_YOUR_APP_URL=http://localhost:3004
 ## License
 
 MIT
+
+
+------------------------
+Triển khai bảo vệ CSRF
+Triển khai cơ chế refresh token tốt hơn
+Thiết lập Content Security Policy (CSP)

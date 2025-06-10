@@ -70,33 +70,7 @@ const availableApps: AppInfo[] = [
     isComingSoon: true,
     releaseDate: 'Quý 3/2025',
     backgroundColor: 'from-gray-100 to-gray-200',
-  },
-  {
-    id: 'quan-ly-tai-san',
-    name: 'Quản lý tài sản',
-    description: 'Hệ thống quản lý tài sản đầu tư',
-    longDescription: 'Hệ thống quản lý tài sản đầu tư với các tính năng theo dõi hiệu suất, phân tích rủi ro và báo cáo chi tiết.',
-    url: '#',
-    logoUrl: '/images/price.png',
-    roles: ['default-roles-vss-dev'],
-    category: 'Quản lý',
-    isComingSoon: true,
-    releaseDate: 'Quý 4/2025',
-    backgroundColor: 'from-slate-100 to-slate-200',
-  },
-  {
-    id: 'phan-tich-du-lieu',
-    name: 'Phân tích dữ liệu',
-    description: 'Công cụ phân tích dữ liệu nâng cao',
-    longDescription: 'Công cụ phân tích dữ liệu nâng cao với các mô hình dự báo, phân tích xu hướng và trực quan hóa dữ liệu.',
-    url: '#',
-    logoUrl: '/images/micro.png',
-    roles: ['default-roles-vss-dev'],
-    category: 'Phân tích',
-    isComingSoon: true,
-    releaseDate: 'Quý 1/2026',
-    backgroundColor: 'from-zinc-100 to-zinc-200',
-  },
+  }
 ];
 
 export default function DashboardPage() {
@@ -133,7 +107,7 @@ export default function DashboardPage() {
 
     try {
       // Gọi API để thiết lập cookie
-      const response = await fetch('/api/auth/set-cookie', {
+      const response = await fetch('/api/cookie/set-cookie', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: session?.access_token }),
