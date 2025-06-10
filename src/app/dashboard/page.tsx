@@ -23,18 +23,18 @@ const availableApps: AppInfo[] = [
     isFeatured: true,
     backgroundColor: 'from-primary-100 to-lime-200',
   },
-  {
-    id: 'micro-app-demo',
-    name: 'Micro App Demo',
-    description: 'Ứng dụng demo micro frontend',
-    longDescription: 'Ứng dụng demo cho kiến trúc micro frontend với các tính năng mẫu.',
-    url: process.env.NEXT_PUBLIC_MAD_URL || 'http://localhost:3001',
-    logoUrl: '/images/micro.png',
-    roles: ['default-roles-vss-dev'],
-    category: 'Demo',
-    isNew: true,
-    backgroundColor: 'from-secondary-100 to-primary-200',
-  },
+  // {
+  //   id: 'micro-app-demo',
+  //   name: 'Micro App Demo',
+  //   description: 'Ứng dụng demo micro frontend',
+  //   longDescription: 'Ứng dụng demo cho kiến trúc micro frontend với các tính năng mẫu.',
+  //   url: process.env.NEXT_PUBLIC_MAD_URL || 'http://localhost:3001',
+  //   logoUrl: '/images/micro.png',
+  //   roles: ['default-roles-vss-dev'],
+  //   category: 'Demo',
+  //   isNew: true,
+  //   backgroundColor: 'from-secondary-100 to-primary-200',
+  // },
   {
     id: 'giay-to-co-gia',
     name: 'Giấy tờ có giá',
@@ -44,6 +44,7 @@ const availableApps: AppInfo[] = [
     logoUrl: '/images/price.png',
     roles: ['default-roles-vss-dev'],
     category: 'Quản lý',
+    isNew: true,
     backgroundColor: 'from-lime-100 to-moss-200', // Màu xanh lá nhạt
   },
   {
@@ -55,7 +56,10 @@ const availableApps: AppInfo[] = [
     logoUrl: '/images/bank.png',
     roles: ['default-roles-vss-dev'],
     category: 'Giám sát',
-    backgroundColor: 'from-moss-100 to-lime-200', // Màu xanh rêu nhạt
+    isComingSoon: true,
+    releaseDate: '2026',
+    backgroundColor: 'from-gray-100 to-gray-200',
+    // backgroundColor: 'from-moss-100 to-lime-200', // Màu xanh rêu nhạt
   },
   // Các ứng dụng Coming Soon
   {
@@ -68,7 +72,7 @@ const availableApps: AppInfo[] = [
     roles: ['default-roles-vss-dev'],
     category: 'Báo cáo',
     isComingSoon: true,
-    releaseDate: 'Quý 3/2025',
+    releaseDate: '2026',
     backgroundColor: 'from-gray-100 to-gray-200',
   }
 ];

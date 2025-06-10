@@ -32,17 +32,6 @@ export function getAllowedOrigins(): string[] {
   const allowedOriginsString = process.env.ALLOWED_ORIGINS || '';
   const allowedOrigins = allowedOriginsString.split(',').filter(origin => origin.trim() !== '');
   
-  // Thêm origins cho môi trường development nếu cần
-  // if (process.env.NODE_ENV === 'development' && allowedOrigins.length === 0) {
-  //   allowedOrigins.push(
-  //     'http://localhost:3000', 
-  //     'http://localhost:3001',
-  //     'http://localhost:3004',
-  //     'http://localhost:3005',
-  //     'http://localhost:3008'
-  //   );
-  // }
-  
   return allowedOrigins;
 }
 

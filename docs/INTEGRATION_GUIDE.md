@@ -1,6 +1,6 @@
 # Hướng dẫn tích hợp Micro App với SSO Portal
 
-Tài liệu này hướng dẫn cách tích hợp một micro app với SSO Portal để sử dụng xác thực Single Sign-On (SSO) thông qua Keycloak.
+Tài liệu này hướng dẫn chi tiết cách tích hợp một micro app với SSO Portal để sử dụng xác thực Single Sign-On (SSO) thông qua Keycloak.
 
 ## Tổng quan
 
@@ -8,14 +8,27 @@ SSO Portal là điểm truy cập chính cho hệ thống micro frontend. Ngư�
 
 Luồng xác thực:
 
-1. Người dùng đăng nhập vào SSO Portal
-2. SSO Portal nhận token từ Keycloak
+1. Người dùng đăng nhập vào SSO Portal thông qua Keycloak
+2. SSO Portal nhận JWT token từ Keycloak với thông tin người dùng và phân quyền
 3. Khi người dùng chọn một micro app, SSO Portal chuyển hướng đến micro app với token
-4. Micro app xác thực token và cho phép truy cập
+4. Micro app xác thực token và cho phép truy cập nếu token hợp lệ và chưa hết hạn
 
 ## Cách tích hợp
 
-### 1. Đăng ký Micro App trong SSO Portal
+### 1. Hiểu về cấu trúc JWT Token của Keycloak
+
+Keycloak cung cấp JWT token với các trường tiêu chuẩn và tuỳ chỉnh. Đặc biệt cần lưu ý các trường sau:
+
+- `exp`: Thời điểm hết hạn của token, tính bằng giây kể từ Unix Epoch (1/1/1970). Đây là trường tiêu chuẩn JWT (RFC 7519).
+- `iat`: Thời điểm phát hành token.
+- `sub`: Định danh duy nhất của người dùng.
+- `name`: Tên đầy đủ của người dùng.
+- `email`: Email của người dùng.
+- `realm_access.roles`: Danh sách các vai trò của người dùng trong realm.
+
+Thời gian sống của token được cấu hình trong Keycloak, thường là 5-30 phút tùy theo cài đặt.
+
+### 2. Đăng ký Micro App trong SSO Portal
 
 Thêm thông tin micro app vào danh sách `availableApps` trong file `src/app/dashboard/page.tsx` của SSO Portal:
 
@@ -52,13 +65,18 @@ NEXT_PUBLIC_YOUR_APP_URL=http://localhost:3004
 import { jwtDecode } from 'jwt-decode';
 
 interface TokenPayload {
-  exp?: number;
-  sub?: string;
-  name?: string;
-  email?: string;
+  // Trường chuẩn JWT
+  exp?: number;  // Thời gian hết hạn (Unix timestamp in seconds)
+  iat?: number;  // Thời gian phát hành (Unix timestamp in seconds)
+  sub?: string;  // Subject - Định danh người dùng
+  
+  // Trường do Keycloak cung cấp
+  name?: string;  // Tên người dùng
+  email?: string; // Email người dùng
   realm_access?: {
-    roles: string[];
+    roles: string[]; // Vai trò của người dùng trong realm
   };
+  // Các trường khác có thể có tùy theo cấu hình Keycloak
 }
 
 export function getTokenFromUrl() {
@@ -72,6 +90,20 @@ export function validateToken(token: string) {
   try {
     const decoded = jwtDecode<TokenPayload>(token);
     const currentTime = Math.floor(Date.now() / 1000);
+    
+    // Log thông tin token để debug (chỉ log thông tin cơ bản, không log nội dung chi tiết)
+    console.log('Token validation:', {
+      sub: decoded.sub,
+      hasName: !!decoded.name,
+      hasEmail: !!decoded.email,
+      hasRoles: !!(decoded.realm_access?.roles),
+      // Hiển thị thời gian hết hạn dưới dạng ngày giờ đọc được (múi giờ Việt Nam)
+      expiration: decoded.exp ? new Date(decoded.exp * 1000).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : 'unknown',
+      // Thời gian hiện tại
+      currentTime: new Date(currentTime * 1000).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }),
+      // Thời gian còn lại trước khi hết hạn (phút)
+      minutesRemaining: decoded.exp ? Math.round((decoded.exp - currentTime) / 60) : 'unknown'
+    });
     
     if (decoded.exp && decoded.exp > currentTime) {
       // Token còn hạn
@@ -87,10 +119,14 @@ export function validateToken(token: string) {
     }
     
     // Token hết hạn
-    return { valid: false };
+    console.error('Token hết hạn:', {
+      expTime: decoded.exp ? new Date(decoded.exp * 1000).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : 'unknown',
+      currentTime: new Date(currentTime * 1000).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
+    });
+    return { valid: false, error: 'Token hết hạn' };
   } catch (error) {
     console.error('Token validation error:', error);
-    return { valid: false };
+    return { valid: false, error: 'Token không hợp lệ' };
   }
 }
 
@@ -324,10 +360,119 @@ npm run dev
 
 1. **Token không hợp lệ**: Kiểm tra cấu hình Keycloak và đảm bảo client ID và secret đúng
 2. **Lỗi CORS**: Cấu hình CORS trong Keycloak và Micro App
-3. **Token hết hạn**: Triển khai cơ chế refresh token
+3. **Token hết hạn**: Triển khai cơ chế refresh token hoặc điều chỉnh thời gian sống của token
 4. **Người dùng không có quyền truy cập**: Kiểm tra cấu hình role trong Keycloak và Micro App
+
+## Cấu hình JWT Token trong Keycloak
+
+### Cấu hình thời gian sống của token
+
+Thời gian sống của token được cấu hình trong giao diện quản trị của Keycloak:
+
+1. Đăng nhập vào Keycloak Admin Console
+2. Chọn realm của bạn
+3. Vào phần "Realm Settings" > "Tokens"
+4. Các tham số cần điều chỉnh:
+   - **Access Token Lifespan**: Thời gian sống của access token (mặc định: 5 phút)
+   - **Client Session Idle**: Thời gian không hoạt động tối đa của phiên (mặc định: 30 phút)
+   - **Client Session Max**: Thời gian sống tối đa của phiên (mặc định: 10 giờ)
+
+### Xử lý token hết hạn
+
+Các cách xử lý khi token hết hạn:
+
+1. **Sử dụng refresh token**: Khi access token hết hạn, sử dụng refresh token để lấy access token mới mà không cần đăng nhập lại.
+
+   ```typescript
+   // src/utils/auth.ts
+   export async function refreshAccessToken(refreshToken: string) {
+     try {
+       const response = await fetch('/api/auth/refresh-token', {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({ refreshToken }),
+       });
+       
+       const data = await response.json();
+       
+       if (!response.ok) {
+         throw new Error(data.error || 'Failed to refresh token');
+       }
+       
+       return {
+         accessToken: data.accessToken,
+         refreshToken: data.refreshToken,
+       };
+     } catch (error) {
+       console.error('Error refreshing token:', error);
+       // Chuyển hướng về trang đăng nhập nếu không thể làm mới token
+       redirectToSSO();
+       return null;
+     }
+   }
+   ```
+
+2. **Tăng thời gian sống của token** (chỉ nên sử dụng cho môi trường test):
+   - Điều chỉnh "Access Token Lifespan" trong Keycloak lên cao hơn (ví dụ: 15-30 phút).
+   - Lưu ý: điều này làm giảm tính bảo mật, không nên dùng cho môi trường production.
+
+3. **Hiển thị thông báo trước khi hết hạn**: Hiển thị thông báo cho người dùng vài phút trước khi token hết hạn.
+
+   ```typescript
+   // src/components/TokenExpirationWarning.tsx
+   export function TokenExpirationWarning() {
+     const { token } = useAuth();
+     const [showWarning, setShowWarning] = useState(false);
+     
+     useEffect(() => {
+       if (!token) return;
+       
+       try {
+         const decoded = jwtDecode<TokenPayload>(token);
+         const expiresAt = decoded.exp ? decoded.exp * 1000 : 0;
+         const currentTime = Date.now();
+         const timeUntilExpiration = expiresAt - currentTime;
+         
+         // Hiển thị cảnh báo khi còn 2 phút trước khi hết hạn
+         if (timeUntilExpiration > 0 && timeUntilExpiration < 2 * 60 * 1000) {
+           setShowWarning(true);
+         }
+       } catch (error) {
+         console.error('Error checking token expiration:', error);
+       }
+     }, [token]);
+     
+     if (!showWarning) return null;
+     
+     return (
+       <div className="token-expiration-warning">
+         Phiên làm việc của bạn sắp hết hạn. Vui lòng lưu công việc và đăng nhập lại.
+       </div>
+     );
+   }
+   ```
+
+### Quy đổi timestamp sang định dạng ngày giờ đọc được
+
+Khi debug hoặc log thông tin về token, nên chuyển đổi timestamp Unix (số giây từ Unix Epoch) sang định dạng ngày giờ đọc được:
+
+```typescript
+// Chuyển đổi timestamp thành định dạng giờ phút giây trong múi giờ Việt Nam (GMT+7)
+function formatTimestamp(timestamp: number | undefined): string {
+  if (!timestamp) return 'unknown';
+  return new Date(timestamp * 1000).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+}
+
+// Sử dụng
+console.log(`Token hết hạn lúc: ${formatTimestamp(decoded.exp)}`);
+console.log(`Thời gian hiện tại: ${formatTimestamp(Math.floor(Date.now() / 1000))}`);
+```
 
 ## Tài liệu tham khảo
 
 - [Keycloak Documentation](https://www.keycloak.org/documentation)
+- [Keycloak Server Admin Guide](https://www.keycloak.org/docs/latest/server_admin/)
 - [NextAuth.js Documentation](https://next-auth.js.org/)
+- [RFC 7519 - JWT Standard](https://datatracker.ietf.org/doc/html/rfc7519)
