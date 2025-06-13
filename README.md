@@ -116,4 +116,40 @@ MIT
 ------------------------
 Triển khai bảo vệ CSRF
 Triển khai cơ chế refresh token tốt hơn
+const refreshToken = async () => {
+  try {
+    const response = await fetch(process.env.REFRESH_TOKEN_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'refresh_token',
+        client_id: process.env.FRONTEND_CLIENT_ID,
+        refresh_token: refreshTokenValue
+      })
+    });
+    
+    const data = await response.json();
+    saveToken(data.access_token);
+    saveRefreshToken(data.refresh_token);
+    return data.access_token;
+  } catch (error) {
+    console.error('Lỗi refresh token:', error);
+    logout(); // Đăng xuất nếu không refresh được
+    return null;
+  }
+};
 Thiết lập Content Security Policy (CSP)
+-------------------------
+Automated refresh token: NextAuth có cơ chế tự động refresh token mà sso-portal có thể học hỏi
+sso-portal học hỏi từ vssfe_gtcg:
+Auto-refresh workflow: Logic refresh token tự động
+Typed token interfaces: Interface được định nghĩa rõ ràng cho token structure
+Comprehensive token storage: Lưu trữ đầy đủ các loại token (access, id, refresh)
+vssfe_gtcg (Ưu điểm)
+Cơ chế refresh tự động: Tự động làm mới token trước khi hết hạn
+Error handling đầy đủ: Xử lý các trường hợp lỗi khi refresh token
+Kiểu dữ liệu chặt chẽ: TypeScript interfaces cho token structure
+--------------------------
+Thêm token refresh queue:
+Khi nhiều request cùng gặp lỗi 401, chỉ refresh token một lần
+Các request khác đợi kết quả refresh và dùng token mới

@@ -2,6 +2,10 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 
+// Thêm các thành phần xác thực và giám sát token
+import { SessionProvider } from '@/components/SessionProvider';
+import TokenMonitor from '@/components/TokenMonitor';
+
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -17,7 +21,13 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body className={inter.className}>
-        {children}
+        {/* Cung cấp session cho toàn bộ ứng dụng */}
+        <SessionProvider>
+          {/* Giám sát token hết hạn và tự động redirect khi cần */}
+          <TokenMonitor checkInterval={20000}> {/* Kiểm tra mỗi 20 giây */}
+            {children}
+          </TokenMonitor>
+        </SessionProvider>
       </body>
     </html>
   );
